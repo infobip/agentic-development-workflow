@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# Loop runtime
+.loop.lock
+
+# Local Claude Code overrides
+.claude/settings.local.json
+autonomous-implementation/.claude/settings.local.json

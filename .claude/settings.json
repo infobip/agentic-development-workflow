@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./.secrets/**)",
+      "Read(./secrets/**)"
+    ]
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true
+  },
+  "effortLevel": "high"
+}

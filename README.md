@@ -1,6 +1,7 @@
-# Agentic Development Workflow
+Companion repository for the paper.
 
-Companion repository for the paper "A Phased Workflow for Operating LLM-Based Coding Agents."
+![Phased workflow for operating LLM-based coding agents](figures/workflow.png)
+
 
 The workflow structures agent-assisted development into four phases:
 
@@ -9,8 +10,6 @@ Research -> Planning -> Task Definition <-> Implementation
 ```
 
 Human effort is front-loaded. Agent delegation increases as the artifacts become more precise. When implementation exposes a bad task definition, return to task definition instead of patching around the problem in code.
-
-![Phased workflow for operating LLM-based coding agents](figures/workflow.png)
 
 Figure source: [`figures/workflow.excalidraw`](figures/workflow.excalidraw)
 

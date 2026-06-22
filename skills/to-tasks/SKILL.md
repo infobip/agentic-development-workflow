@@ -17,12 +17,13 @@ Do not implement anything in this phase. Do not write PRD-style narrative. Stay 
 3. Ask only critical clarifying questions if real ambiguity remains.
 4. Discover project commands and conventions.
 5. Write `TASKS.md` to the project root unless the user specifies another path.
+6. If the user says the tasks are for the autonomous implementation kit, ask whether to write `autonomous-implementation/TASKS.md` instead.
 
 ## Locate inputs
 
 Look for `PLAN.md` and `RESEARCH.md` in the project root or the user-specified location.
 
-If `PLAN.md` is missing, stop and ask the user to create it. If `TASKS.md` already exists, follow the Existing `TASKS.md` section below. Never overwrite silently.
+If `PLAN.md` is missing, stop and ask the user to create it. If the user says the tasks are for `autonomous-implementation/`, ask whether to write the task registry to `autonomous-implementation/TASKS.md` so `loop.sh` can use it without extra environment variables. If `TASKS.md` already exists at the target path, follow the Existing `TASKS.md` section below. Never overwrite silently.
 
 ## Minimal clarification
 
@@ -164,7 +165,7 @@ Use this structure. Include optional sections only if the input artifacts suppor
 **Run:** `<command>`
 ```
 
-Task headings must be `### T-N: Title` with sequential IDs starting at `T-1`. `Passes` is always `false` when generated; the implementation loop flips it to `true` after successful verification.
+Task headings must be `### T-N: Title` with sequential IDs starting at `T-1`. `Passes` is always `false` when generated and must appear exactly as a task-status bullet: `- **Passes:** false`. The implementation loop flips it to `true` after successful verification.
 
 ## Existing `TASKS.md`
 

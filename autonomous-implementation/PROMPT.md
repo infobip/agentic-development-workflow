@@ -16,7 +16,7 @@ If a tool-specific adapter file exists, such as `CLAUDE.md`, read it after `AGEN
 
 ## Workflow
 
-1. **Pick the task.** Find the first task in `TASKS.md` where `**Passes:** false`. That is your task. If none exist, output exactly `<all-tasks-done/>` and stop.
+1. **Pick the task.** Find the first task in `TASKS.md` with a task-status line `- **Passes:** false`. That is your task. Ignore mentions of `**Passes:** false` in comments, examples, or instructions. If none exist, output exactly `<all-tasks-done/>` and stop.
 2. **Plan.** Re-read the task's `Description` and `Steps`. Identify the files to change. Use subagents or isolated research sessions for parallel exploration only when available and useful.
 3. **Execute.** Work through the steps. Stay strictly in scope. Do not fix unrelated issues, refactor outside the task, or start the next task.
 4. **Verify.** Run the lint, type-check, test, or build commands from `AGENTS.md` that apply to this task. Fix failures within the task scope.

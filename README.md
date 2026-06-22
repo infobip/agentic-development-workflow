@@ -1,6 +1,6 @@
 # Agentic Development Workflow
 
-Companion repository for the paper "A Phased Workflow for Operating LLM-Based Coding Agents".
+Companion repository for the paper "A Phased Workflow for Operating LLM-Based Coding Agents."
 
 The workflow structures agent-assisted development into four phases:
 
@@ -126,6 +126,7 @@ agentic-development-workflow/
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── figures/
+│   ├── workflow.png
 │   └── workflow.excalidraw
 ├── skills/
 │   ├── brainstorm/
@@ -134,6 +135,7 @@ agentic-development-workflow/
 │   ├── scholar/
 │   └── to-tasks/
 ├── autonomous-implementation/
+│   ├── README.md
 │   ├── AGENTS.md
 │   ├── CLAUDE.md
 │   ├── PROMPT.md
@@ -144,7 +146,6 @@ agentic-development-workflow/
 │   └── loop.sh
 └── .claude/
     ├── settings.json
-    ├── statusline-command.sh
     └── skills/ -> symlinks to ../skills
 ```
 
@@ -156,7 +157,7 @@ agentic-development-workflow/
 
 ## Autonomous implementation kit
 
-`autonomous-implementation/` contains one optional implementation of the implementation phase. It is currently a Claude Code shell loop, so it is adapter-specific even though the workflow is agent-agnostic.
+`autonomous-implementation/` contains one optional implementation of the Implementation phase. The loop driver is agent-agnostic: practitioners provide the command that starts one fresh coding-agent session through `LOOP_AGENT_COMMAND`, while adapter files such as `CLAUDE.md` provide tool-specific examples.
 
 Use it only after research, planning, and task definition are complete:
 
@@ -164,7 +165,23 @@ Use it only after research, planning, and task definition are complete:
 PLAN.md -> /to-tasks -> TASKS.md -> autonomous loop -> commits + ACTIVITY.md
 ```
 
-Do not run the loop on `main`. Use a branch, a sandboxed environment, and human review before merge. See [`autonomous-implementation/SANDBOX.md`](autonomous-implementation/SANDBOX.md) for isolation options.
+Example generic invocation:
+
+```bash
+cd autonomous-implementation
+export LOOP_AGENT_COMMAND='your-agent-cli --non-interactive < "$LOOP_PROMPT_FILE"'
+./loop.sh 3
+```
+
+Claude Code adapter example:
+
+```bash
+cd autonomous-implementation
+export LOOP_AGENT_COMMAND='claude -p "$(cat "$LOOP_PROMPT_FILE")" --output-format json --dangerously-skip-permissions'
+./loop.sh 3
+```
+
+Do not run the loop on `main`. Use a branch, a sandboxed environment, and human review before merge. See [`autonomous-implementation/README.md`](autonomous-implementation/README.md) and [`autonomous-implementation/SANDBOX.md`](autonomous-implementation/SANDBOX.md) for usage and isolation guidance.
 
 ## Safety and privacy
 

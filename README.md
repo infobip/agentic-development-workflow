@@ -1,4 +1,7 @@
-Companion repository for the paper.
+[![DOI](https://img.shields.io/badge/DOI-10.1145%2F3799682.3839253-blue)](https://doi.org/10.1145/3799682.3839253)
+[![arXiv](https://img.shields.io/badge/arXiv-2608.30701-b31b1b)](https://arxiv.org/abs/2608.30701)
+
+Companion repository for the paper "A Phased Workflow for Operating LLM-Based Coding Agents" (CIKM '26 Industry Day). See [Citation](#citation).
 
 ![Phased workflow for operating LLM-based coding agents](figures/workflow.png)
 
@@ -185,6 +188,22 @@ Do not run the loop on `main`. Use a branch, a sandboxed environment, and human 
 ## Safety and privacy
 
 Do not commit secrets, tokens, private endpoints, private model names, browser session data, or local machine settings. Keep local overrides in ignored files such as `.claude/settings.local.json`.
+
+## Citation
+
+```bibtex
+@inproceedings{kapetanovic2026phased,
+  title     = {A Phased Workflow for Operating LLM-Based Coding Agents},
+  author    = {Kapetanovic, Ante and Duricic, Tomislav and Mercep, Andro and Lacic, Emanuel},
+  booktitle = {Proceedings of the 35th ACM International Conference on Information and Knowledge Management},
+  series    = {CIKM '26},
+  year      = {2026},
+  publisher = {ACM},
+  address   = {New York, NY, USA},
+  location  = {Rome, Italy},
+  doi       = {10.1145/3799682.3839253}
+}
+```
 
 ## License
 

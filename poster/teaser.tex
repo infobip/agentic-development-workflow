@@ -1,0 +1,64 @@
+\documentclass[aspectratio=169]{beamer}
+% 960 x 540 pt, the PowerPoint 16:9 size, so point sizes read as slide sizes.
+\geometry{papersize={960pt,540pt}}
+\usepackage{style}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{background canvas}{bg=white}
+\usefonttheme{professionalfonts}
+
+\newlength{\wfunit}
+\setlength{\wfunit}{8.8pt}
+\newlength{\wfline}
+\setlength{\wfline}{2.2pt}
+\newcommand{\wfleft}{0}
+\newcommand{\wfboxw}{21}
+\newcommand{\wfcurveh}{13.5}
+\newcommand{\wfboxh}{5.5}
+\newcommand{\wfgap}{4}
+\newcommand{\wftitlefont}{\fontsize{20}{23}\selectfont\bfseries}
+\newcommand{\wflabelfont}{\fontsize{18}{21}\selectfont}
+\newcommand{\wfgutterfont}{\wflabelfont}
+\newcommand{\wfdescfont}{\wflabelfont}
+\newcommand{\wfmonofont}{\fontsize{18}{21}\selectfont\ttfamily}
+\newif\ifwfcompact
+\wfcompacttrue
+\newcommand{\wfannotation}{%
+  \node[font=\wflabelfont\itshape, text=ink, anchor=south] at (50, 0.6)
+    {With autopilot, the pilot still works hardest at takeoff and landing.};
+}
+
+\begin{document}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    % Phase strip along the top edge, as under the poster header.
+    \foreach \i/\col in {0/research, 1/planning, 2/taskdef, 3/implementation}
+      \fill[\col] ($(current page.north west) + (\i*240pt, 0)$) rectangle ++(240pt, -8pt);
+
+    \coordinate (nw) at ([xshift=40pt, yshift=-30pt] current page.north west);
+    % Agent part in agent orange, human part in human ink, as in the figure.
+    \node[anchor=north west, inner sep=0pt, align=left, font=\fontsize{42}{47}\selectfont\bfseries]
+      (head) at (nw) {\textcolor{implementation}{Agents write code faster}\\\textcolor{ink}{than humans can review it.}};
+    \node[anchor=north west, inner sep=0pt, font=\fontsize{26}{31}\selectfont, text=muted]
+      (sub) at ([yshift=-12pt] head.south west)
+      {You can't review every line an agent writes, but you have to own it.};
+
+    \node[anchor=north, inner sep=0pt] at ([yshift=-22pt] current page.north |- sub.south)
+      {\input{figures/workflow}};
+
+    \fill[panel] (current page.south west) rectangle ([yshift=112pt] current page.south east);
+    \node[anchor=west, inner sep=0pt] (qr) at ([xshift=36pt, yshift=56pt] current page.south west)
+      {\repoqr{80pt}};
+    \node[anchor=west, inner sep=0pt, text width=600pt, align=left] at ([xshift=18pt] qr.east)
+      {{\fontsize{20}{24}\selectfont\bfseries\textcolor{ink}{\papertitle}}\\[2pt]
+       {\fontsize{18}{22}\selectfont\textcolor{muted}{\authorlist}}\\[8pt]
+       \tikz\node[fill=implementation, text=white, rounded corners=5pt, inner xsep=10pt, inner ysep=5pt,
+         font=\fontsize{20}{24}\selectfont\bfseries] {Join us during the poster session};};
+    \node[anchor=east, inner sep=0pt] (cikm) at ([xshift=-36pt, yshift=56pt] current page.south east)
+      {\includegraphics[height=72pt]{figures/cikm2026.png}};
+    % Shifted down so the infobip wordmark shares the CIKM wordmark's baseline.
+    \node[anchor=east, inner sep=0pt] at ([xshift=-18pt, yshift=-10.8pt] cikm.west)
+      {\includegraphics[height=58pt]{figures/infobip.png}};
+  \end{tikzpicture}
+\end{frame}
+\end{document}

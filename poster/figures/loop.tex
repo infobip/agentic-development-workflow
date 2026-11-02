@@ -1,0 +1,16 @@
+% Open-ended research loop from the case study, \input by poster.tex.
+\begin{tikzpicture}[
+  stage/.style={draw=implementation, fill=implementation!14, line width=2.5pt, rounded corners=14pt,
+    minimum width=330pt, minimum height=56pt, align=center,
+    font=\fontsize{28}{34}\selectfont, text=ink},
+  flow/.style={-{Stealth[length=20pt, width=18pt]}, line width=3.5pt, ink!80},
+]
+  \node[stage] (session) at (0, 0) {Fresh agent session};
+  \node[stage] (proposal) at (410pt, 0) {One bounded proposal};
+  \node[stage, draw=ink, fill=white, line width=3.5pt] (eval) at (410pt, -140pt) {Protected evaluation};
+  \node[stage] (retain) at (0, -140pt) {Retain or restore};
+  \draw[flow] (session) -- (proposal);
+  \draw[flow] (proposal) -- (eval);
+  \draw[flow] (eval) -- (retain);
+  \draw[flow] (retain) -- (session);
+\end{tikzpicture}

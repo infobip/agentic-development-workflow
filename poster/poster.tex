@@ -1,0 +1,230 @@
+\documentclass{article}
+\usepackage[paperwidth=841mm, paperheight=1189mm, margin=32mm]{geometry}
+\usepackage{style}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage[numbers, sort&compress]{natbib}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\raggedright
+\color{ink}
+
+\newcommand{\bodysize}{\fontsize{30}{39}\selectfont}
+\newcommand{\smallsize}{\fontsize{28}{35}\selectfont}
+\newcommand{\refsize}{\fontsize{18}{22}\selectfont}
+\newcommand{\headsize}{\fontsize{48}{56}\selectfont}
+
+\newcommand{\sectionhead}[1]{{\headsize\bfseries\raggedright #1\par}\vspace{20pt}}
+\newcommand{\phasebar}{%
+  \begin{tikzpicture}
+    \foreach \i/\col in {0/research, 1/planning, 2/taskdef, 3/implementation}
+      \fill[\col] (\i*\textwidth/4, 0) rectangle ({(\i+1)*\textwidth/4 - 6pt}, 10pt);
+  \end{tikzpicture}}
+% Tinted panel: width, height, content. Content sits at the top, ragged right.
+\newcommand{\panel}[3]{%
+  \begin{tikzpicture}[baseline=0pt]
+    \node[fill=panel, rounded corners=18pt, inner sep=34pt, text width=#1-68pt, align=left, anchor=north]
+      at (0, 0) {\vbox to \dimexpr#2-68pt\relax{#3\vfil}};
+  \end{tikzpicture}}
+% Takeaway card: statement, explanation.
+\newcommand{\takeaway}[2]{\panel{0.32\textwidth}{\takeawayh}{%
+  {\fontsize{48}{56}\selectfont\bfseries #1\par}
+  \vspace{14pt}
+  #2}}
+% Legend entry: chip in a fixed-width slot, then its definition.
+\newcommand{\legend}[4][failure]{\hangindent=#2\hangafter=1\makebox[#2][l]{\chip[#1]{#3}}#4\par\vspace{8pt}}
+
+\setlist[itemize]{leftmargin=1.1em, label={\textcolor{muted}{\textbullet}}, itemsep=14pt, topsep=0pt, parsep=0pt}
+\setlist[enumerate]{leftmargin=1.4em, label={\bfseries\arabic*.}, itemsep=20pt, topsep=0pt, parsep=0pt}
+
+\setlength{\bibsep}{2pt}
+\renewcommand{\bibsection}{}
+\renewcommand{\bibfont}{\refsize\interlinepenalty=10000}
+\setcitestyle{square}
+\urlstyle{same}
+% Question mark that swallows the punctuation the bibliography style appends.
+\makeatletter
+\newcommand{\qmark}{?\@ifnextchar,{\@gobble}{\@ifnextchar.{\@gobble}{}}}
+\makeatother
+
+% Workflow figure parameters, full width.
+\newlength{\wfunit}
+\setlength{\wfunit}{0.01\textwidth}
+\newlength{\wfline}
+\setlength{\wfline}{4.5pt}
+\newcommand{\wfleft}{9}
+\newcommand{\wfboxw}{21}
+\newcommand{\wfcurveh}{12.5}
+\newcommand{\wfboxh}{5}
+\newcommand{\wfgap}{2.4}
+\newcommand{\wfrowh}{3.3}
+\newcommand{\wfstackh}{5.8}
+\newcommand{\wftitlefont}{\fontsize{40}{46}\selectfont\bfseries}
+\newcommand{\wfsubfont}{\fontsize{28}{33}\selectfont}
+\newcommand{\wfdescfont}{\fontsize{28}{34}\selectfont}
+\newcommand{\wflabelfont}{\fontsize{28}{33}\selectfont}
+\newcommand{\wfgutterfont}{\fontsize{30}{36}\selectfont\bfseries}
+\newcommand{\wfmonofont}{\fontsize{28}{33}\selectfont\ttfamily}
+\newif\ifwfcompact
+\wfcompactfalse
+
+\newcommand{\takeawayh}{210pt}
+\newcommand{\bottomh}{712pt}
+
+\begin{document}
+\bodysize
+
+% Header
+\begin{minipage}[c]{300pt}
+  \includegraphics[height=200pt]{figures/infobip.png}
+\end{minipage}%
+\begin{minipage}[c]{\dimexpr\textwidth-600pt\relax}
+  \centering
+  {\fontsize{88}{98}\selectfont\bfseries A Phased Workflow for Operating\\LLM-Based Coding Agents\par}
+  \vspace{18pt}
+  {\fontsize{36}{44}\selectfont \authorlist\par}
+  \vspace{6pt}
+  {\fontsize{28}{34}\selectfont\ttfamily\color{muted}\{ankapetanovic, tduricic, amercep, emlacic\}@infobip.com\par}
+\end{minipage}%
+\begin{minipage}[c]{300pt}
+  \raggedleft
+  \includegraphics[height=200pt]{figures/cikm2026.png}
+\end{minipage}
+
+\vspace{24pt}
+\phasebar
+
+\vfill
+\vspace{24pt}
+
+% Why
+\begin{minipage}[t]{0.48\textwidth}
+  \raggedright
+  \sectionhead{\textcolor{agent}{Agents write code faster}\\than humans can review it}
+  \begin{itemize}
+    \item Losing track of the agent costs. A 25\% rise in AI adoption came with an estimated 7.2\% drop in delivery stability~\cite{dora2024}. One agent deleted a production database during a code freeze~\cite{sharwood2025replit}.
+    \item Watching is not enough. Operators who only monitor lose the skill to take over~\cite{bainbridge1983ironies}.
+    \item Autopilot kept the pilot, who works hardest at takeoff and landing. Our workflow puts human effort in the same places.
+  \end{itemize}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \raggedright
+  \sectionhead{Long, noisy context\\makes agents worse}
+  Multi-turn chats cut LLM performance by {\bfseries 39\%} on average~\cite{laban2025lostturn}. Irrelevant context lowers accuracy even when the answer is present~\cite{hong2025contextrot}.\par
+  \vspace{22pt}
+  {\smallsize
+  \begin{minipage}[t]{0.5\linewidth}
+    \raggedright
+    {\bfseries Failure modes~\cite{breunig2025longcontexts}\par}\vspace{14pt}
+    \legend{205pt}{distraction}{old patterns dominate}
+    \legend{205pt}{confusion}{irrelevant content}
+    \legend{205pt}{poisoning}{hallucinations persist}
+    \legend{205pt}{clash}{new facts conflict}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \raggedright
+    {\bfseries Strategies against them~\cite{martin2025contexteng}\par}\vspace{14pt}
+    \legend[strategy]{190pt}{write}{save to files}
+    \legend[strategy]{190pt}{select}{load what's needed}
+    \legend[strategy]{190pt}{compress}{keep what's required}
+    \legend[strategy]{190pt}{isolate}{fresh sessions}
+  \end{minipage}\par}
+\end{minipage}
+
+\vfill
+
+% Takeaways
+\takeaway{Front-load the thinking.}
+  {Humans own research and planning, where mistakes cost the most.}%
+\hfill
+\takeaway{Build the backpressure.}
+  {Acceptance criteria and validation reject bad output before you review it.}%
+\hfill
+\takeaway{Stay on the loop.}
+  {One task per fresh session. You review, and bad tasks go back.}
+
+\vfill
+
+% Hero
+\vspace{28pt}
+\sectionhead{Four phases, with human effort front-loaded}
+\input{figures/workflow}
+\vspace{8pt}
+
+{\color{muted}Research and planning run once per project. Each repeated agent mistake earns one short line in \texttt{AGENTS.md}~\cite{jaroslawicz2025instructions}. Extends research-plan-implement~\cite{horthy2025ace}.\par}
+
+\vfill
+
+% Case study and open problems
+\panel{0.485\textwidth}{\bottomh}{%
+  \sectionhead{Open-ended research, beyond the paper}
+  An autonomous implementation loop improved PCA normal estimation~\cite{hoppe1992surface} on PCPNet~\cite{guerrero2018pcpnet}. The agent could edit the estimator but never the scorer.\par
+  \vspace{14pt}
+  \input{figures/loop}\hfill
+  \begin{tikzpicture}[baseline=(s.north), stat/.style={anchor=north west, inner sep=0pt, align=left, text width=200pt}]
+    \node[stat] (s) at (0, 0) {{\fontsize{56}{60}\selectfont\bfseries 322}\\[2pt]{\smallsize fresh sessions}};
+    \node[stat] at (0, -128pt) {{\fontsize{56}{60}\selectfont\bfseries <18\,h}\\[2pt]{\smallsize wall clock}};
+  \end{tikzpicture}\par
+  \vspace{12pt}
+  {\fontsize{56}{60}\selectfont\bfseries\color{implementation}−11.7\%}\enspace
+  {\smallsize angular RMSE from 16.26° to 14.36°, 95\% CI of the difference [−2.23°, −1.59°]~\cite{kapetanovic2026normals}\par}
+  \vspace{10pt}
+  No single session found the final estimator. With no control run, the gain is not yet the workflow's (open problem 1).}%
+\hfill
+\panel{0.485\textwidth}{\bottomh}{%
+  \sectionhead{Let's talk about open problems}
+  \begin{enumerate}
+    \item {\bfseries No metrics for workflow effectiveness.} Nobody can yet show that a phased workflow beats unstructured delegation, or that tasks have the right size.\par
+      \vspace{14pt}
+      Candidate metrics, none tested yet\par
+      \vspace{10pt}
+      \begin{tabular}{@{}l@{}}
+        \chip[failure]{task success rate per session}\\[8pt]
+        \chip[failure]{instruction correction rate}\\[8pt]
+        \chip[failure]{context utilization at task completion}
+      \end{tabular}
+    \item {\bfseries Research stops at components.} Pruning, compression, and tool selection are studied one at a time. The workflows that combine them have no shared terms, so teams cannot compare them.
+  \end{enumerate}
+  \vspace{28pt}
+  {\bfseries Have a metric or a counterexample? Open an issue in the repo.\par}}
+
+\vfill
+
+% Footer
+{\color{rule}\rule{\textwidth}{2pt}}\par
+\vspace{26pt}
+\begin{minipage}[t]{0.33\textwidth}
+  \vspace{0pt}
+  \begin{minipage}[c]{170pt}
+    \repoqr{150pt}
+  \end{minipage}%
+  \begin{minipage}[c]{\dimexpr\linewidth-170pt\relax}
+    \fontsize{24}{30}\selectfont
+    \begin{tabular}{@{}c@{\hspace{12pt}}l@{}}
+      \raisebox{-0.3\height}{\includegraphics[height=40pt]{figures/github.png}} & infobip/agentic-development-workflow \\[26pt]
+      \raisebox{-0.3\height}{\includegraphics[height=40pt]{figures/doi.png}} & 10.1145/3799682.3839253
+    \end{tabular}
+  \end{minipage}
+
+  \vspace{20pt}
+  {\refsize\color{muted}\raggedright Supported in part by the Infobip Global Communication Platform project (PK.1.1.07.0001), within the Important Project of Common European Interest on Next Generation Cloud Infrastructure and Services (IPCEI-CIS).\par}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.65\textwidth}
+  \vspace{0pt}
+  \begin{multicols}{4}
+    \raggedright\sloppy
+    \bibliographystyle{ieeetr}
+    \bibliography{references}
+  \end{multicols}
+\end{minipage}
+
+\end{document}

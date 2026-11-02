@@ -1,0 +1,134 @@
+% Phased workflow figure, \input by poster.tex and teaser.tex.
+% The figure is 100 units wide. The caller defines:
+%   \wfunit, \wfline           unit length (figure width / 100) and line width
+%   \wfleft                    width of the row label column in units (0 in compact mode)
+%   \wfboxw                    phase box and band width in units, at most (100 - \wfleft) / 4
+%   \wfcurveh, \wfboxh, \wfgap curve panel, box and gap heights in units
+%   \wftitlefont, \wflabelfont, \wfgutterfont, \wfdescfont
+%   \ifwfcompact               true shows only the curves and the phase boxes
+%   \wfannotation              optional TikZ code drawn above the curve panel
+% The full figure also needs:
+%   \wfrowh, \wfstackh         heights of one-line and two-line rows in units
+%   \wfsubfont, \wfmonofont
+\providecommand{\wfannotation}{}
+\newcommand{\wfstroke}[1]{\tikz[baseline=-0.6ex] \draw[#1] (0, 0) -- (1.6em, 0);}
+\begin{tikzpicture}[
+  x=\wfunit, y=\wfunit,
+  humanline/.style={human, line width=\wfline, line cap=round},
+  agentline/.style={agent, line width=\wfline, line cap=round, dash pattern=on 3\wfline off 2\wfline},
+  phase/.style={draw=#1, fill=#1!14, line width=\wfline, rounded corners=0.8\wfunit,
+    minimum width=\wfboxw\wfunit, minimum height=\wfboxh\wfunit, text width=(\wfboxw-1.5)*\wfunit,
+    align=center, anchor=north, inner sep=0pt},
+  flow/.style={-{Stealth[length=\the\dimexpr4\wfline\relax, width=\the\dimexpr7\wfline/2\relax]},
+    line width=0.75\wfline, ink!80},
+  desc/.style={anchor=south west, align=left, inner sep=0pt, text width=(#1)*\wfunit,
+    font=\wfdescfont, text=ink},
+  desc/.default=\wfboxw-3,
+  stack/.style={align=center, inner sep=0pt, font=\wflabelfont},
+  rowlabel/.style={anchor=west, inner sep=0pt, font=\wfgutterfont, text=muted},
+  gutter/.style={font=\wfgutterfont, text=muted, rotate=90, anchor=south, overlay},
+]
+  \pgfmathsetmacro{\wfpitch}{(100 - \wfleft)/4}
+  \newcommand{\wfx}[1]{\wfleft + \wfpitch*(#1 + 0.5)}
+  \newcommand{\wfbl}[1]{\wfx{#1} - \wfboxw/2}
+  \newcommand{\wfbr}[1]{\wfx{#1} + \wfboxw/2}
+  % Involvement level k (1 = low, 4 = high) inside the curve panel.
+  \newcommand{\wfL}[1]{\ycurvebot + \wfcurveh*(0.06 + 0.22*(#1 - 1))}
+  \pgfmathsetmacro{\ycurvebot}{-\wfcurveh}
+  \pgfmathsetmacro{\yboxtop}{\ycurvebot - \wfgap}
+  \pgfmathsetmacro{\yboxbot}{\yboxtop - \wfboxh}
+  \pgfmathsetmacro{\wfy}{\yboxbot - \wfgap}
+
+  % Phase bands behind the involvement curves.
+  \foreach \i/\col in {0/research, 1/planning, 2/taskdef, 3/implementation}
+    \fill[\col!10, rounded corners=0.8\wfunit] ({\wfbl{\i}}, 0) rectangle ({\wfbr{\i}}, \ycurvebot);
+  \ifwfcompact
+    \node[gutter] at (0, \ycurvebot/2) {Involvement};
+  \else
+    \node[rowlabel, align=left] at (0, \ycurvebot/2)
+      {Involvement\\[0.5em]{\mdseries\wfstroke{humanline}\enspace human}\\[0.2em]{\mdseries\wfstroke{agentline}\enspace agent}};
+  \fi
+
+  % A curve holds one level per phase and steps between phases. The last
+  % argument is the level reached at the right end of implementation.
+  \newcommand{\wfstep}[3]{%
+    -- ({\wfbr{#1} - 3}, {\wfL{#2}})
+    .. controls ({\wfbr{#1} + 1}, {\wfL{#2}}) and ({\wfbl{#1 + 1} - 1}, {\wfL{#3}})
+    .. ({\wfbl{#1 + 1} + 3}, {\wfL{#3}})}
+  \newcommand{\wfcurve}[6]{%
+    \draw[#1] ({\wfbl{0} + 0.8}, {\wfL{#2}}) \wfstep{0}{#2}{#3} \wfstep{1}{#3}{#4} \wfstep{2}{#4}{#5}
+      -- ({\wfbr{3} - 5}, {\wfL{#5}})
+      .. controls ({\wfbr{3} - 2.5}, {\wfL{#5}}) and ({\wfbr{3} - 2}, {\wfL{#6}}) .. ({\wfbr{3} - 0.8}, {\wfL{#6}});}
+  \wfcurve{agentline}{1}{1}{3.2}{4}{4}
+  \wfcurve{humanline}{4}{4}{1.8}{1}{2.3}
+
+  % Text sitting on a curve: phase, level, optional width, content.
+  \newcommand{\wfon}[4][\wfboxw-3]{\node[desc=#1] at ({\wfbl{#2} + 1.5}, {\wfL{#3} + 0.35}) {#4};}
+  \ifwfcompact
+    \wfon{0}{4}{\bfseries Human}
+    \wfon{0}{1}{\bfseries Agent}
+    \node[font=\wflabelfont, text=muted, anchor=south east] at ({\wfbr{1} - 3}, {\wfL{1} + 0.35}) {delegation increases};
+    \node[font=\wflabelfont, text=muted, anchor=south east] at ({\wfbr{3} - 0.8}, {\wfL{2.3} + 0.35}) {review};
+  \else
+    \wfon{0}{4}{guides, withholds opinions, validates findings}
+    \wfon{0}{1}{explores with read-only and search tools}
+    \wfon{1}{4}{decides, curates by hand}
+    \wfon{1}{1}{proposes options outside plan mode}
+    \wfon{2}{1.8}{checks each task fits one session~\cite{hong2025contextrot}}
+    \wfon{2}{3.2}{writes acceptance criteria and validation}
+    \wfon[\wfboxw-7]{3}{1}{supervises, reviews output}
+    \wfon{3}{4}{implements, validates, logs, commits}
+  \fi
+  \wfannotation
+
+  \foreach \i/\col/\name/\sub in {
+      0/research/Research/Validate the problem context,
+      1/planning/Planning/Choose the approach,
+      2/taskdef/Task Definition/Write one-session tasks,
+      3/implementation/Implementation/One fresh session per task}
+    \node[phase=\col] (box\i) at ({\wfx{\i}}, \yboxtop)
+      {{\wftitlefont\strut\textcolor{ink}{\name}}\ifwfcompact\else\\[0.25em]{\wfsubfont\textcolor{muted}{\sub}}\fi};
+
+  \draw[flow] (box0.east) -- (box1.west);
+  \draw[flow] (box1.east) -- (box2.west);
+  \draw[flow] ($(box2.north east)!0.3!(box2.south east)$) -- ($(box3.north west)!0.3!(box3.south west)$);
+  \draw[flow] ($(box3.north west)!0.7!(box3.south west)$) -- ($(box2.north east)!0.7!(box2.south east)$);
+  \node[font=\wflabelfont, text=muted, anchor=south, inner sep=0.15em] at ({\wfleft + 3*\wfpitch}, \yboxtop) {execute};
+  \node[font=\wflabelfont, text=muted, anchor=north, inner sep=0.15em] at ({\wfleft + 3*\wfpitch}, \yboxbot) {refine};
+
+  \ifwfcompact\else
+    % One row per practice: label, height, then one cell per phase.
+    \newcommand{\wfrow}[6]{%
+      \draw[rule, line width=0.4\wfline] (0, \wfy) -- (100, \wfy);
+      \node[rowlabel] at (0, \wfy - #2/2) {#1};
+      \node[stack] at ({\wfx{0}}, \wfy - #2/2) {#3};
+      \node[stack] at ({\wfx{1}}, \wfy - #2/2) {#4};
+      \node[stack] at ({\wfx{2}}, \wfy - #2/2) {#5};
+      \node[stack] at ({\wfx{3}}, \wfy - #2/2) {#6};
+      \pgfmathsetmacro{\wfy}{\wfy - #2}}
+    \wfrow{Prevents}{\wfrowh}
+      {\chip[failure]{confusion}\enspace\chip[failure]{distraction}}
+      {\chip[failure]{poisoning}}
+      {\chip[failure]{distraction}}
+      {\chip[failure]{poisoning}\enspace\chip[failure]{distraction}}
+    \wfrow{Using}{\wfrowh}
+      {\chip[strategy]{select}\enspace\chip[strategy]{isolate}\enspace\chip[strategy]{write}}
+      {\chip[strategy]{compress}\enspace\chip[strategy]{write}}
+      {\chip[strategy]{write}\enspace\chip[strategy]{isolate}}
+      {\chip[strategy]{isolate}\enspace\chip[strategy]{select}\enspace\chip[strategy]{write}}
+    \wfrow{Repo skills}{\wfstackh}
+      {\chip{/research}\enspace\chip{/scholar}\\[0.5em]\chip{/handover}}
+      {\chip{/brainstorm}\\[0.5em]\chip{/handover}}
+      {\chip{/to-tasks}}
+      {\chip[mode]{manual supervision}\\[0.5em]\chip[mode]{autonomous loop}}
+    \wfrow{Writes}{\wfstackh}
+      {\chip[artifact]{RESEARCH.md}}
+      {\chip[artifact]{PLAN.md}}
+      {\chip[artifact]{TASKS.md}}
+      {\chip[artifact]{AGENTS.md}\enspace\chip[artifact]{ACTIVITY.md}\\[0.5em]\chip[artifact]{git commits}}
+  \fi
+
+  % Fix the width to 100 units so line widths and labels never widen the figure.
+  \pgfresetboundingbox
+  \useasboundingbox (0, \ifwfcompact 2\else 0\fi) rectangle (100, \wfy);
+\end{tikzpicture}

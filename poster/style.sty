@@ -1,0 +1,46 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style}[2026/10/30 Shared style for the CIKM 2026 teaser and poster]
+
+\RequirePackage{fontspec}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{qrcode}
+\usetikzlibrary{arrows.meta, calc}
+
+\setmainfont{Inter}[Numbers=Lining]
+\setsansfont{Inter}[Numbers=Lining]
+\setmonofont{JetBrains Mono}
+
+% Phase colors from the CIKM 2026 logo (green, Colosseum ochre, brick) and
+% Infobip orange; shades are spread in lightness for grayscale and CVD.
+\definecolor{research}{HTML}{1F6B30}
+\definecolor{planning}{HTML}{E6B84A}
+\definecolor{taskdef}{HTML}{6E1F16}
+\definecolor{implementation}{HTML}{FC6322}
+\definecolor{ink}{HTML}{1C1C1E}
+\definecolor{muted}{HTML}{5F6670}
+\definecolor{rule}{HTML}{DADDE1}
+\definecolor{panel}{HTML}{F4F5F7}
+
+\colorlet{human}{ink}
+\colorlet{agent}{implementation}
+
+\newcommand{\repourl}{https://github.com/infobip/agentic-development-workflow}
+\newcommand{\papertitle}{A Phased Workflow for Operating LLM-Based Coding Agents}
+\newcommand{\authorlist}{Ante Kapetanovic, Tomislav Duricic, Andro Mercep, Emanuel Lacic}
+
+\newcommand{\repoqr}[1]{\qrcode[height=#1, level=M]{\repourl}}
+
+% Chips shared by the workflow figure and the poster text. Sizes follow the
+% caller's \wfunit, \wfline, \wfmonofont and \wflabelfont.
+\tikzset{
+  chip/.style={draw=rule, fill=white, rounded corners=0.5\wfunit, line width=0.4\wfline,
+    font=\wfmonofont, text=ink, inner xsep=0.7em, inner ysep=0.35em,
+    text height=0.75em, text depth=0.22em},
+  artifact/.style={chip, fill=panel},
+  mode/.style={chip, draw=implementation!45, fill=implementation!10, font=\wflabelfont},
+  failure/.style={chip, draw=ink!45, font=\wflabelfont\itshape},
+  strategy/.style={chip, draw=ink, fill=ink, text=white, font=\wflabelfont\bfseries},}
+\newcommand{\chip}[2][chip]{\tikz[baseline=(c.base)] \node[#1] (c) {#2};}
+
+\endinput

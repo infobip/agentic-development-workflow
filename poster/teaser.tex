@@ -13,7 +13,7 @@
 \setlength{\wfline}{2.2pt}
 \newcommand{\wfleft}{0}
 \newcommand{\wfboxw}{21}
-\newcommand{\wfcurveh}{13.5}
+\newcommand{\wfcurveh}{15.5}
 \newcommand{\wfboxh}{5.5}
 \newcommand{\wfgap}{4}
 \newcommand{\wftitlefont}{\fontsize{20}{23}\selectfont\bfseries}
@@ -39,11 +39,7 @@
     % Agent part in agent orange, human part in human ink, as in the figure.
     \node[anchor=north west, inner sep=0pt, align=left, font=\fontsize{42}{47}\selectfont\bfseries]
       (head) at (nw) {\textcolor{implementation}{Agents write code faster}\\\textcolor{ink}{than humans can review it.}};
-    \node[anchor=north west, inner sep=0pt, font=\fontsize{26}{31}\selectfont, text=muted]
-      (sub) at ([yshift=-12pt] head.south west)
-      {You can't review every line an agent writes, but you have to own it.};
-
-    \node[anchor=north, inner sep=0pt] at ([yshift=-22pt] current page.north |- sub.south)
+    \node[anchor=north, inner sep=0pt] at ([yshift=-40pt] current page.north |- head.south)
       {\input{figures/workflow}};
 
     \fill[panel] (current page.south west) rectangle ([yshift=112pt] current page.south east);

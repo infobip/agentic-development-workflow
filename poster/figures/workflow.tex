@@ -2,7 +2,7 @@
 % The figure is 100 units wide. The caller defines:
 %   \wfunit, \wfline           unit length (figure width / 100) and line width
 %   \wfleft                    width of the row label column in units (0 in compact mode)
-%   \wfboxw                    phase box and band width in units, at most (100 - \wfleft) / 4
+%   \wfboxw                    phase box and band width in units, less than the column pitch
 %   \wfcurveh, \wfboxh, \wfgap curve panel, box and gap heights in units
 %   \wftitlefont, \wflabelfont, \wfgutterfont, \wfdescfont
 %   \ifwfcompact               true shows only the curves and the phase boxes
@@ -28,7 +28,13 @@
   rowlabel/.style={anchor=west, inner sep=0pt, font=\wfgutterfont, text=muted},
   gutter/.style={font=\wfgutterfont, text=muted, rotate=90, anchor=south, overlay},
 ]
-  \pgfmathsetmacro{\wfpitch}{(100 - \wfleft)/4}
+  % In the full figure the last box ends at 100, so the key at 0 and the box
+  % sit at equal distances from the page margins.
+  \ifwfcompact
+    \pgfmathsetmacro{\wfpitch}{(100 - \wfleft)/4}
+  \else
+    \pgfmathsetmacro{\wfpitch}{(100 - \wfleft - \wfboxw/2)/3.5}
+  \fi
   \newcommand{\wfx}[1]{\wfleft + \wfpitch*(#1 + 0.5)}
   \newcommand{\wfbl}[1]{\wfx{#1} - \wfboxw/2}
   \newcommand{\wfbr}[1]{\wfx{#1} + \wfboxw/2}
@@ -42,11 +48,13 @@
   % Phase bands behind the involvement curves.
   \foreach \i/\col in {0/research, 1/planning, 2/taskdef, 3/implementation}
     \fill[\col!10, rounded corners=0.8\wfunit] ({\wfbl{\i}}, 0) rectangle ({\wfbr{\i}}, \ycurvebot);
-  \ifwfcompact
-    \node[gutter] at (0, \ycurvebot/2) {Involvement};
-  \else
-    \node[rowlabel, align=left] at (0, \ycurvebot/2)
-      {Involvement\\[0.5em]{\mdseries\wfstroke{humanline}\enspace human}\\[0.2em]{\mdseries\wfstroke{agentline}\enspace agent}};
+  % Y axis along the left edge of the curve panel.
+  \pgfmathsetmacro{\wfaxisx}{\wfbl{0} - 1}
+  \draw[flow] (\wfaxisx, \ycurvebot) -- (\wfaxisx, 0);
+  \node[gutter] at (\wfaxisx - 0.5, \ycurvebot/2) {Involvement};
+  \ifwfcompact\else
+    \node[rowlabel, align=left, font=\wflabelfont] at (0, \ycurvebot/2)
+      {\wfstroke{humanline}\enspace human\\[0.2em]\wfstroke{agentline}\enspace agent};
   \fi
 
   % A curve holds one level per phase and steps between phases. The last
